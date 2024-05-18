@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import "./Calendar.css"; // Add this line for calendar styles
+import "./styles/App.css";
+import "./styles/Calendar.css"; // Add this line for calendar styles
 
 import AuthService from "./services/auth.service";
 import IUser from './types/user.type';
@@ -11,6 +11,7 @@ import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
 import Calendar from "./components/calendar.component"; // Add this line to import the Calendar component
+import Home from "./components/home.components"; // Add this line to import the Home component
 
 import EventBus from "./common/EventBus";
 
@@ -71,6 +72,11 @@ class App extends Component<Props, State> {
             Tracker
           </Link>
           <div className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <Link to={"/"} className="nav-link">
+                Home
+              </Link>
+            </li>
             {currentUser && (
               <li className="nav-item">
                 <Link to={"/calendar"} className="nav-link">
@@ -112,10 +118,11 @@ class App extends Component<Props, State> {
 
         <div className="container mt-3">
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/calendar" element={<Calendar />} /> {/* Add this line */}
+            <Route path="/calendar" element={<Calendar />} />
           </Routes>
         </div>
 
