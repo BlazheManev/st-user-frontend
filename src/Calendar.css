@@ -1,0 +1,13 @@
+.holiday {
+    background-color: red !important;
+    color: white !important;
+  }
+  
+  .saturday {
+    background-color: #f0f8ff !important; /* Light blue */
+  }
+  
+  .sunday {
+    background-color: #ffe4e1 !important; /* Light pink */
+  }
+  

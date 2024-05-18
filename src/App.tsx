@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import "./Calendar.css"; // Add this line for calendar styles
 
 import AuthService from "./services/auth.service";
 import IUser from './types/user.type';
@@ -9,6 +10,7 @@ import IUser from './types/user.type';
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
+import Calendar from "./components/calendar.component"; // Add this line to import the Calendar component
 
 import EventBus from "./common/EventBus";
 
@@ -69,11 +71,10 @@ class App extends Component<Props, State> {
             Tracker
           </Link>
           <div className="navbar-nav mr-auto">
-
             {currentUser && (
               <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
+                <Link to={"/calendar"} className="nav-link">
+                  Calendar
                 </Link>
               </li>
             )}
@@ -114,6 +115,7 @@ class App extends Component<Props, State> {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/calendar" element={<Calendar />} /> {/* Add this line */}
           </Routes>
         </div>
 
