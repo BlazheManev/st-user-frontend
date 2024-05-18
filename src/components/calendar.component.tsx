@@ -3,9 +3,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import allLocales from "@fullcalendar/core/locales-all";
-import { EventApi, DateSelectArg, EventClickArg } from "@fullcalendar/core";
+import { EventApi, EventClickArg } from "@fullcalendar/core";
 import { format } from 'date-fns';
-import { INITIAL_EVENTS, createEventId } from "../types/event-utils";
 import AuthService from "../services/auth.service";
 import axios from 'axios';
 import authHeader from '../services/auth-header';
@@ -31,21 +30,6 @@ function Calendar() {
     (events: EventApi[]) => setCurrentEvents(events),
     []
   );
-
-  const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
-    let title = prompt("Please enter a title for the event")?.trim();
-    let calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect();
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
-      });
-    }
-  }, []);
 
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
     if (window.confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'?`)) {
@@ -73,14 +57,12 @@ function Calendar() {
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
-          selectable={true}
-          editable={true}
-          initialEvents={INITIAL_EVENTS}
+          selectable={false} // Disable selecting days to add events
+          editable={false} // Disable editing events
           locales={allLocales}
           locale="en" // Change to English
           firstDay={1} // Set the first day of the week to Monday
           eventsSet={handleEvents}
-          select={handleDateSelect}
           eventClick={handleEventClick}
           dayCellContent={(day) => {
             const workingDay = workingHours.find((wh) => format(new Date(wh.datum), 'yyyy-MM-dd') === format(day.date, 'yyyy-MM-dd'));
