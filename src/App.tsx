@@ -10,8 +10,9 @@ import IUser from './types/user.type';
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
-import Calendar from "./components/calendar.component"; // Add this line to import the Calendar component
-import Home from "./components/home.components"; // Add this line to import the Home component
+import Calendar from "./components/calendar.component";
+import Home from "./components/home.components";
+import MyQRCode from "./components/myQR.component";
 
 import EventBus from "./common/EventBus";
 
@@ -84,6 +85,13 @@ class App extends Component<Props, State> {
                 </Link>
               </li>
             )}
+            {currentUser && (
+              <li className="nav-item">
+                <Link to={"/myQR"} className="nav-link">
+                  QR Code
+                </Link>
+              </li>
+            )}
           </div>
 
           {currentUser ? (
@@ -123,6 +131,7 @@ class App extends Component<Props, State> {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/myQR" element={<MyQRCode />} />
           </Routes>
         </div>
 
