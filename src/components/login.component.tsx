@@ -57,6 +57,7 @@ export default class Login extends Component<Props, State> {
         this.setState({
           redirect: "/profile"
         });
+        window.location.reload();
       },
       error => {
         const resMessage =
