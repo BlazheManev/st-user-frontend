@@ -1,23 +1,49 @@
 .home-container {
-    text-align: center;
-    padding: 20px;
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.home-logo {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover; /* Ensures the image covers the entire circle */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+p {
+  font-size: 1.2em;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: 10px;
   }
-  
+
   .home-logo {
-    width: 250px;
-    height: 250px;
-    margin-bottom: 20px;
-    border-radius: 50%; /* Makes the image circular */
-    object-fit: cover; /* Ensures the image covers the entire circle */
+    width: 100px;
+    height: 100px;
   }
-  
+
   h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
+    font-size: 2em;
   }
-  
+
   p {
-    font-size: 1.2em;
-    color: #555;
+    font-size: 1em;
   }
-  
+}

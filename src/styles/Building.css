@@ -1,0 +1,50 @@
+.building-container {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .building {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .user-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    animation: pulse 2s infinite;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+  
+  .user-circle:hover {
+    transform: scale(1.2);
+    background-color: #0056b3;
+  }
+  
+  .user-circle span {
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
