@@ -68,60 +68,66 @@ class App extends Component<Props, State> {
 
     return (
       <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
             Tracker
           </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/"} className="nav-link">
-                Home
-              </Link>
-            </li>
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/calendar"} className="nav-link">
-                  Calendar
-                </Link>
-              </li>
-            )}
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/myQR"} className="nav-link">
-                  QR Code
-                </Link>
-              </li>
-            )}
+          {currentUser && (
+                  <Link to={"/myQR"} className="navbar-brand">
+                    QR Code
+                  </Link>
+              )}
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav mr-auto">
+              {currentUser && (
+                <li className="nav-item d-none d-lg-block">
+                  <Link to={"/calendar"} className="nav-link">
+                    Calendar
+                  </Link>
+                </li>
+              )}
+            </ul>
+            <ul className="navbar-nav ml-auto">
+              {currentUser ? (
+                <>
+                  <li className="nav-item">
+                    <Link to={"/profile"} className="nav-link">
+                      {currentUser.email}
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <a href="/login" className="nav-link" onClick={this.logOut}>
+                      LogOut
+                    </a>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Link to={"/login"} className="nav-link">
+                      Login
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/register"} className="nav-link">
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
           </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  {currentUser.email}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  LogOut
-                </a>
-              </li>
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
-                </Link>
-              </li>
-            </div>
-          )}
         </nav>
 
         <div className="container mt-3">
