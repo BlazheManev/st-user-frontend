@@ -91,7 +91,7 @@ class App extends Component<Props, State> {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav mr-auto">
               {currentUser && (
-                <li className="nav-item d-none d-lg-block">
+                <li className="nav-item">
                   <Link to={"/calendar"} className="nav-link">
                     Calendar
                   </Link>
