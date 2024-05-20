@@ -13,6 +13,8 @@ import Profile from "./components/profile.component";
 import Calendar from "./components/calendar.component";
 import Home from "./components/home.components";
 import MyQRCode from "./components/myQR.component";
+import AddAbsence from "./components/addAbsence.components"; // Import the AddAbsence component
+import AllUsersCalendar from "./components/AllUsersCalendar"; // Import the new calendar component
 
 import EventBus from "./common/EventBus";
 
@@ -97,6 +99,20 @@ class App extends Component<Props, State> {
                   </Link>
                 </li>
               )}
+              {currentUser && (
+                <li className="nav-item">
+                  <Link to={"/addAbsence"} className="nav-link">
+                    Vacation
+                  </Link>
+                </li>
+              )}
+               {currentUser && (
+                <li className="nav-item">
+                    <Link to={"/all-users-calendar"} className="nav-link">
+                    Absence Calendar
+                  </Link>
+                </li>
+              )}
             </ul>
             <ul className="navbar-nav ml-auto">
               {currentUser ? (
@@ -138,6 +154,8 @@ class App extends Component<Props, State> {
             <Route path="/profile" element={<Profile />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/myQR" element={<MyQRCode />} />
+            <Route path="/all-users-calendar" element={<AllUsersCalendar />} /> {/* Add this line */}
+            <Route path="/addAbsence" element={<AddAbsence />} /> {/* Add this route */}
           </Routes>
         </div>
 
