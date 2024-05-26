@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import allLocales from "@fullcalendar/core/locales-all";
-import { format } from "date-fns";
+import { format, eachDayOfInterval } from "date-fns";
 import axios from "axios";
 import authHeader from "../services/auth-header";
 import CustomModal from "./customModel.component";
@@ -93,6 +93,27 @@ function AllUsersCalendar() {
     return (event as Vacation).status !== undefined;
   };
 
+  const isWeekend = (date: Date) => {
+    const day = date.getDay();
+    return day === 0 || day === 6;
+  };
+
+  const filterEventsForDay = (events: CalendarEvent[], dateStr: string) => {
+    return events.filter((event) => {
+      if (isVacation(event)) {
+        // Exclude weekends from the vacation range
+        const vacationDays = eachDayOfInterval({
+          start: new Date(event.startDate),
+          end: new Date(event.endDate)
+        }).filter(date => !isWeekend(date));
+
+        return vacationDays.some(day => format(day, "yyyy-MM-dd") === dateStr);
+      }
+      return dateStr >= format(new Date(event.startDate), "yyyy-MM-dd") &&
+             dateStr <= format(new Date(event.endDate), "yyyy-MM-dd");
+    });
+  };
+
   return (
     <div className="demo-app">
       <div className="demo-app-main">
@@ -107,7 +128,7 @@ function AllUsersCalendar() {
           eventsSet={handleEvents}
           dayCellContent={(day) => {
             const dateStr = format(day.date, "yyyy-MM-dd");
-            const eventsForDay: CalendarEvent[] = absences
+            const eventsForDay: CalendarEvent[] = filterEventsForDay(absences
               .flatMap((absence) =>
                 [
                   ...(absence.vacations || []).filter(vacation => vacation.status === 'approved').map((vacation) => ({
@@ -124,12 +145,8 @@ function AllUsersCalendar() {
                     priimek: absence.priimek
                   }))
                 ]
-              )
-              .filter(
-                (event) =>
-                  dateStr >= format(new Date(event.startDate), "yyyy-MM-dd") &&
-                  dateStr <= format(new Date(event.endDate), "yyyy-MM-dd")
-              );
+              ), dateStr);
+
             const holiday = isHoliday(day.date);
 
             return (
@@ -149,13 +166,24 @@ function AllUsersCalendar() {
           dayCellClassNames={(date) => {
             const day = date.date.getDay();
             const dateStr = format(date.date, "yyyy-MM-dd");
-            const isVacationOrTrip = absences.some(absence =>
-              [...(absence.vacations || []), ...(absence.businessTrips || [])].some(event =>
-                dateStr >= format(new Date(event.startDate), "yyyy-MM-dd") &&
-                dateStr <= format(new Date(event.endDate), "yyyy-MM-dd") &&
-                (isVacation(event) ? event.status === 'approved' : true)
-              )
-            );
+            const isVacationOrTrip = filterEventsForDay(absences.flatMap((absence) =>
+              [
+                ...(absence.vacations || []).filter(vacation => vacation.status === 'approved').map((vacation) => ({
+                  ...vacation,
+                  type: 'vacation' as const,
+                  ime: absence.ime,
+                  priimek: absence.priimek,
+                  absenceId: absence._id
+                })),
+                ...(absence.businessTrips || []).map((trip) => ({
+                  ...trip,
+                  type: 'businessTrip' as const,
+                  ime: absence.ime,
+                  priimek: absence.priimek
+                }))
+              ]
+            ), dateStr).length > 0;
+
             return isHoliday(date.date)
               ? "holiday"
               : day === 0

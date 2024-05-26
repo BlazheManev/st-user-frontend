@@ -31,36 +31,29 @@ const AddAbsence: React.FC = () => {
 
   const currentUser = AuthService.getCurrentUser();
 
-  const TOTAL_VACATION_DAYS = 24; // Assume each user has 24 vacation days per year
-
   useEffect(() => {
     if (currentUser && currentUser.id) {
       fetchAbsences(currentUser.id);
+      fetchRemainingDays(currentUser.id);
     }
-  }, [currentUser]);
+  }, [currentUser?.id]); // Only call when currentUser.id changes and is non-null
 
   const fetchAbsences = async (userId: string) => {
     try {
       const response = await axios.get(`http://localhost:3000/absence/user/${userId}`, { headers: authHeader() });
       setAbsences(response.data);
-      calculateRemainingDays(response.data);
     } catch (error) {
       console.error('Error fetching absences:', error);
     }
   };
 
-  const calculateRemainingDays = (absences: Absence[]) => {
-    let totalDaysTaken = 0;
-    absences.forEach((absence) => {
-      absence.vacations.forEach((vacation) => {
-        const start = new Date(vacation.startDate);
-        const end = new Date(vacation.endDate);
-        const days = (end.getTime() - start.getTime()) / (1000 * 3600 * 24) + 1; // Include end date
-        totalDaysTaken += days;
-      });
-    });
-    const remaining = TOTAL_VACATION_DAYS - totalDaysTaken;
-    setRemainingDays(remaining > 0 ? remaining : 0);
+  const fetchRemainingDays = async (userId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/users/get/${userId}`, { headers: authHeader() });
+      setRemainingDays(response.data.vacationDaysLeft);
+    } catch (error) {
+      console.error('Error fetching remaining days:', error);
+    }
   };
 
   const handleAddAbsence = async (event: React.FormEvent) => {
@@ -83,6 +76,7 @@ const AddAbsence: React.FC = () => {
         );
         setMessage('Absence added successfully!');
         fetchAbsences(currentUser.id); // Refresh the absences list
+        fetchRemainingDays(currentUser.id); // Refresh the remaining days
       } catch (error) {
         setMessage('Error adding absence. Please try again.');
         console.error('Error adding absence:', error);
