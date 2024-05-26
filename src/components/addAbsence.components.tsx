@@ -31,17 +31,19 @@ const AddAbsence: React.FC = () => {
   const [remainingDays, setRemainingDays] = useState(0);
 
   const currentUser = AuthService.getCurrentUser();
+  const API_URL = process.env.REACT_APP_API_URL;
+  console.log(API_URL);
 
   useEffect(() => {
     if (currentUser && currentUser.id) {
       fetchAbsences(currentUser.id);
       fetchRemainingDays(currentUser.id);
     }
-  }, [currentUser]); // Only call when currentUser changes
+  }, [currentUser?.id]); // Only call when currentUser.id changes
 
   const fetchAbsences = async (userId: string) => {
     try {
-      const response = await axios.get(`http://localhost:3000/absence/user/${userId}`, { headers: authHeader() });
+      const response = await axios.get(`${API_URL}/absence/user/${userId}`, { headers: authHeader() });
       setAbsences(response.data);
     } catch (error) {
       console.error('Error fetching absences:', error);
@@ -50,7 +52,7 @@ const AddAbsence: React.FC = () => {
 
   const fetchRemainingDays = async (userId: string) => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/get/${userId}`, { headers: authHeader() });
+      const response = await axios.get(`${API_URL}/users/get/${userId}`, { headers: authHeader() });
       setRemainingDays(response.data.vacationDaysLeft);
     } catch (error) {
       console.error('Error fetching remaining days:', error);
@@ -80,16 +82,16 @@ const AddAbsence: React.FC = () => {
         reason,
         status: 'waiting for approval', // Set initial status
       };
-
+      console.log(API_URL);
       try {
         await axios.post(
-          'http://localhost:3000/absence/create/new',
+          `${API_URL}/absence/create/new`,
           absenceData,
           { headers: authHeader() }
         );
         setMessage('Absence added successfully!');
-        fetchAbsences(currentUser.id); // Refresh the absences list
-        fetchRemainingDays(currentUser.id); // Refresh the remaining days
+        await fetchAbsences(currentUser.id); // Refresh the absences list
+        await fetchRemainingDays(currentUser.id); // Refresh the remaining days
       } catch (error) {
         setMessage('Error adding absence. Please try again.');
         console.error('Error adding absence:', error);

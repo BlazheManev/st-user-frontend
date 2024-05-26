@@ -25,6 +25,7 @@ interface WorkingHour {
 function Calendar() {
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>([]);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleEvents = useCallback(
     (events: EventApi[]) => setCurrentEvents(events),
@@ -41,7 +42,7 @@ function Calendar() {
     const currentUser = AuthService.getCurrentUser();
     if (currentUser && currentUser.id) {
       const userId = currentUser.id;
-      const apiUrl = `http://localhost:3000/users/${userId}/working-hours`;
+      const apiUrl = `${API_URL}/users/${userId}/working-hours`;
 
       axios.get(apiUrl, { headers: authHeader() }).then((response) => {
         setWorkingHours(response.data);

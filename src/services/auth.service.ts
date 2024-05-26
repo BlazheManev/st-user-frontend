@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+const API_URL2 = process.env.REACT_APP_API_URL;
 
-const API_URL = 'http://localhost:3000/users/';
+const API_URL = `${API_URL2}/users/`;
 
 class AuthService {
   register(ime: string, priimek: string, email: string, password: string, wagePerHour: number, roles: string[]) {
