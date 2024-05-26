@@ -12,20 +12,23 @@ type State = {
   email: string,
   password: string,
   loading: boolean,
-  message: string
+  message: string,
+  showPassword: boolean
 };
 
 export default class Login extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
+    this.togglePasswordVisibility = this.togglePasswordVisibility.bind(this);
 
     this.state = {
       redirect: null,
       email: "",
       password: "",
       loading: false,
-      message: ""
+      message: "",
+      showPassword: false
     };
   }
 
@@ -42,6 +45,12 @@ export default class Login extends Component<Props, State> {
       email: Yup.string().email("This is not a valid email.").required("This field is required!"),
       password: Yup.string().required("This field is required!"),
     });
+  }
+
+  togglePasswordVisibility() {
+    this.setState((prevState) => ({
+      showPassword: !prevState.showPassword
+    }));
   }
 
   handleLogin(formValue: { email: string; password: string }) {
@@ -80,7 +89,7 @@ export default class Login extends Component<Props, State> {
       return <Navigate to={this.state.redirect} />
     }
 
-    const { loading, message } = this.state;
+    const { loading, message, showPassword } = this.state;
 
     const initialValues = {
       email: "",
@@ -114,7 +123,22 @@ export default class Login extends Component<Props, State> {
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <Field name="password" type="password" className="form-control" />
+                <div className="input-group">
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                  />
+                  <div className="input-group-append">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={this.togglePasswordVisibility}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                </div>
                 <ErrorMessage
                   name="password"
                   component="div"

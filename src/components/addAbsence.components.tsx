@@ -82,7 +82,6 @@ const AddAbsence: React.FC = () => {
         reason,
         status: 'waiting for approval', // Set initial status
       };
-      console.log(API_URL);
       try {
         await axios.post(
           `${API_URL}/absence/create/new`,
