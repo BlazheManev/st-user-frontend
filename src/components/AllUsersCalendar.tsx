@@ -59,10 +59,11 @@ function AllUsersCalendar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<CalendarEvent[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/absence/all", { headers: authHeader() })
+      .get(`${API_URL}/absence/all`, { headers: authHeader() })
       .then((response) => {
         setAbsences(response.data);
       })

@@ -7,12 +7,13 @@ interface User {
   userName: string;
   entryTime: string;
 }
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Building: React.FC = () => {
   const [usersInBuilding, setUsersInBuilding] = useState<User[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/users/checkCurrentStatus')
+    axios.get(`${API_URL}/users/checkCurrentStatus`)
       .then(response => {
         setUsersInBuilding(response.data);
       })

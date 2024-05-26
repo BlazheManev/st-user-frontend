@@ -30,10 +30,11 @@ interface BusinessTrip {
 const VacationApproval = () => {
   const [absences, setAbsences] = useState<Absence[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/absence/all", { headers: authHeader() })
+      .get(`${API_URL}/absence/all`, { headers: authHeader() })
       .then((response) => {
         setAbsences(response.data);
       })
@@ -47,7 +48,7 @@ const VacationApproval = () => {
 
   const approveVacation = (absenceId: string, vacationId: string) => {
     axios
-      .post(`http://localhost:3000/absence/approve/${absenceId}/${vacationId}`, {}, { headers: authHeader() })
+      .post(`${API_URL}/absence/approve/${absenceId}/${vacationId}`, {}, { headers: authHeader() })
       .then(() => {
         setAbsences((prevAbsences) => prevAbsences.map((absence) => {
           if (absence._id === absenceId) {
@@ -68,7 +69,7 @@ const VacationApproval = () => {
 
   const rejectVacation = (absenceId: string, vacationId: string) => {
     axios
-      .post(`http://localhost:3000/absence/reject/${absenceId}/${vacationId}`, {}, { headers: authHeader() })
+      .post(`${API_URL}/absence/reject/${absenceId}/${vacationId}`, {}, { headers: authHeader() })
       .then(() => {
         setAbsences((prevAbsences) => prevAbsences.map((absence) => {
           if (absence._id === absenceId) {
