@@ -9,6 +9,7 @@ interface Vacation {
   startDate: string;
   endDate: string;
   reason: string;
+  status: string;
 }
 
 interface Absence {
@@ -71,6 +72,7 @@ const AddAbsence: React.FC = () => {
         startDate,
         endDate,
         reason,
+        status: 'waiting for approval', // Set initial status
       };
 
       try {
@@ -143,6 +145,12 @@ const AddAbsence: React.FC = () => {
                   <p><strong>From:</strong> {new Date(vacation.startDate).toLocaleDateString()}</p>
                   <p><strong>To:</strong> {new Date(vacation.endDate).toLocaleDateString()}</p>
                   <p><strong>Reason:</strong> {vacation.reason}</p>
+                  <p>
+                    <strong>Status:</strong> 
+                    <span className={`status status-${vacation.status.replaceAll(' ', '-')}`}>
+                      {vacation.status}
+                    </span>
+                  </p>
                 </div>
               ))}
               <p className="card-text"><strong>Year:</strong> {absence.year}</p>

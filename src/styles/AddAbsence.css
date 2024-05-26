@@ -1,30 +1,51 @@
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .absence-list {
-    margin-top: 20px;
-  }
-  
-  .absence-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-title {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-  }
-  
-  .vacation-details p {
-    margin: 5px 0;
-  }
-  
-  .card-text {
-    margin-top: 10px;
-    font-size: 1.1em;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.absence-list {
+  margin-top: 20px;
+}
+
+.absence-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.card-title {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.vacation-details p {
+  margin: 5px 0;
+}
+
+.card-text {
+  margin-top: 10px;
+  font-size: 1.1em;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  display: inline-block;
+}
+
+.status-approved {
+  background-color: green;
+}
+
+.status-waiting-for-approval{
+  background-color: orange;
+}
+
+.status-rejected {
+  background-color: red;
+}

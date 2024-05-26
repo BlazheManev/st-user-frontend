@@ -10,6 +10,7 @@ type State = {
   priimek: string,
   email: string,
   password: string,
+  wagePerHour: number, // Add wagePerHour to the state
   roles: string[],
   successful: boolean,
   message: string
@@ -25,6 +26,7 @@ export default class Register extends Component<Props, State> {
       priimek: "",
       email: "",
       password: "",
+      wagePerHour: 0, // Initialize wagePerHour
       roles: ["WORKER"], // Default role
       successful: false,
       message: ""
@@ -37,19 +39,20 @@ export default class Register extends Component<Props, State> {
       priimek: Yup.string().required("This field is required!"),
       email: Yup.string().email("This is not a valid email.").required("This field is required!"),
       password: Yup.string().min(6, "The password must be between 6 and 40 characters.").max(40, "The password must be between 6 and 40 characters.").required("This field is required!"),
+      wagePerHour: Yup.number().min(0, "Wage per hour must be a positive number").required("This field is required!"),
       roles: Yup.array().of(Yup.string())
     });
   }
 
-  handleRegister(formValue: { ime: string; priimek: string; email: string; password: string; roles: string[] }) {
-    const { ime, priimek, email, password, roles } = formValue;
+  handleRegister(formValue: { ime: string; priimek: string; email: string; password: string; wagePerHour: number; roles: string[] }) {
+    const { ime, priimek, email, password, wagePerHour, roles } = formValue;
 
     this.setState({
       message: "",
       successful: false
     });
 
-    AuthService.register(ime, priimek, email, password, roles).then(
+    AuthService.register(ime, priimek, email, password, wagePerHour, roles).then(
       response => {
         this.setState({
           message: response.data.message,
@@ -80,6 +83,7 @@ export default class Register extends Component<Props, State> {
       priimek: "",
       email: "",
       password: "",
+      wagePerHour: 0, // Set initial value for wagePerHour
       roles: ["WORKER"]
     };
 
@@ -125,10 +129,17 @@ export default class Register extends Component<Props, State> {
                   </div>
 
                   <div className="form-group">
+                    <label htmlFor="wagePerHour">Wage per Hour</label>
+                    <Field name="wagePerHour" type="number" className="form-control" />
+                    <ErrorMessage name="wagePerHour" component="div" className="alert alert-danger" />
+                  </div>
+
+                  <div className="form-group">
                     <label htmlFor="roles">Roles</label>
                     <Field name="roles" as="select" multiple={true} className="form-control">
                       <option value="WORKER">Worker</option>
                       <option value="ADMIN">Admin</option>
+                      <option value="STUDENT">Student</option>
                       <option value="MODERATOR">Moderator</option>
                     </Field>
                     <ErrorMessage name="roles" component="div" className="alert alert-danger" />

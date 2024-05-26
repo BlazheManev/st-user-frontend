@@ -15,6 +15,7 @@ import Home from "./components/home.components";
 import MyQRCode from "./components/myQR.component";
 import AddAbsence from "./components/addAbsence.components"; // Import the AddAbsence component
 import AllUsersCalendar from "./components/AllUsersCalendar"; // Import the new calendar component
+import VacationApproval from "./components/VacationApproval"; // Import the VacationApproval component
 
 import EventBus from "./common/EventBus";
 
@@ -75,10 +76,10 @@ class App extends Component<Props, State> {
             Tracker
           </Link>
           {currentUser && (
-                  <Link to={"/myQR"} className="navbar-brand">
-                    QR Code
-                  </Link>
-              )}
+            <Link to={"/myQR"} className="navbar-brand">
+              QR Code
+            </Link>
+          )}
           <button
             className="navbar-toggler"
             type="button"
@@ -106,10 +107,17 @@ class App extends Component<Props, State> {
                   </Link>
                 </li>
               )}
-               {currentUser && (
+              {currentUser && (
                 <li className="nav-item">
-                    <Link to={"/all-users-calendar"} className="nav-link">
+                  <Link to={"/all-users-calendar"} className="nav-link">
                     Absence Calendar
+                  </Link>
+                </li>
+              )}
+              {currentUser && currentUser.roles && (currentUser.roles.includes("ADMIN") || currentUser.roles.includes("MODERATOR")) && (
+                <li className="nav-item">
+                  <Link to={"/vacation-approval"} className="nav-link">
+                    Vacation Approval
                   </Link>
                 </li>
               )}
@@ -156,6 +164,7 @@ class App extends Component<Props, State> {
             <Route path="/myQR" element={<MyQRCode />} />
             <Route path="/all-users-calendar" element={<AllUsersCalendar />} /> {/* Add this line */}
             <Route path="/addAbsence" element={<AddAbsence />} /> {/* Add this route */}
+            <Route path="/vacation-approval" element={<VacationApproval />} /> {/* Add this route */}
           </Routes>
         </div>
 

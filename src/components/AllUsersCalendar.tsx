@@ -10,6 +10,7 @@ import CustomModal from "./customModel.component";
 import '../styles/CustomModal.css';
 
 interface Absence {
+  _id: string;
   userId: string;
   ime: string;
   priimek: string;
@@ -19,9 +20,11 @@ interface Absence {
 }
 
 interface Vacation {
+  _id: string;
   startDate: string;
   endDate: string;
   reason: string;
+  status: string; // Add status field to Vacation
 }
 
 interface BusinessTrip {
@@ -31,7 +34,7 @@ interface BusinessTrip {
 }
 
 type CalendarEvent = 
-  | (Vacation & { type: 'vacation'; ime: string; priimek: string })
+  | (Vacation & { type: 'vacation'; ime: string; priimek: string; absenceId: string })
   | (BusinessTrip & { type: 'businessTrip'; ime: string; priimek: string });
 
 const holidays = [
@@ -55,6 +58,7 @@ function AllUsersCalendar() {
   const [absences, setAbsences] = useState<Absence[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<CalendarEvent[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     axios
@@ -65,6 +69,9 @@ function AllUsersCalendar() {
       .catch((error) => {
         console.error("Error fetching absences:", error);
       });
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    setCurrentUser(user);
   }, []);
 
   const handleEvents = (events: any[]) => {
@@ -79,6 +86,11 @@ function AllUsersCalendar() {
   const closeModal = () => {
     setModalIsOpen(false);
     setModalContent([]);
+  };
+
+  // Type guard to check if an event is a vacation
+  const isVacation = (event: Vacation | BusinessTrip): event is Vacation => {
+    return (event as Vacation).status !== undefined;
   };
 
   return (
@@ -98,11 +110,12 @@ function AllUsersCalendar() {
             const eventsForDay: CalendarEvent[] = absences
               .flatMap((absence) =>
                 [
-                  ...(absence.vacations || []).map((vacation) => ({
+                  ...(absence.vacations || []).filter(vacation => vacation.status === 'approved').map((vacation) => ({
                     ...vacation,
                     type: 'vacation' as const,
                     ime: absence.ime,
-                    priimek: absence.priimek
+                    priimek: absence.priimek,
+                    absenceId: absence._id
                   })),
                   ...(absence.businessTrips || []).map((trip) => ({
                     ...trip,
@@ -139,7 +152,8 @@ function AllUsersCalendar() {
             const isVacationOrTrip = absences.some(absence =>
               [...(absence.vacations || []), ...(absence.businessTrips || [])].some(event =>
                 dateStr >= format(new Date(event.startDate), "yyyy-MM-dd") &&
-                dateStr <= format(new Date(event.endDate), "yyyy-MM-dd")
+                dateStr <= format(new Date(event.endDate), "yyyy-MM-dd") &&
+                (isVacation(event) ? event.status === 'approved' : true)
               )
             );
             return isHoliday(date.date)
@@ -164,7 +178,7 @@ function AllUsersCalendar() {
             </span>
           </div>
         ))}
-        <button onClick={closeModal}>Close</button>
+        <button onClick={closeModal} className="btn btn-secondary">Close</button>
       </CustomModal>
     </div>
   );

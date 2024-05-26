@@ -4,12 +4,13 @@ import { jwtDecode } from "jwt-decode";
 const API_URL = 'http://localhost:3000/users/';
 
 class AuthService {
-  register(ime: string, priimek: string, email: string, password: string, roles: string[]) {
+  register(ime: string, priimek: string, email: string, password: string, wagePerHour: number, roles: string[]) {
     return axios.post(API_URL, {
       ime,
       priimek,
       email,
       password,
+      wagePerHour, // Include wagePerHour
       roles
     });
   }
