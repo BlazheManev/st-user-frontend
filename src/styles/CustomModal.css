@@ -100,3 +100,31 @@
     }
   }
   
+  @media (max-width: 600px) {
+    .fc .fc-daygrid-day-frame {
+      align-items: center;
+      justify-content: left;
+    }
+  
+    .fc .fc-daygrid-day-number {
+      font-size: 1em;
+    }
+  
+    .event-name {
+      display: none; /* Hide event names on small screens */
+    }
+  
+    .show-more {
+        padding: 5px ; /* Adjust padding for smaller screens */
+        margin-top: 5px; /* Set a specific size for margin-top */
+        height: 5em; /* Fixed height */
+        width: 38px; /* Fixed width */
+        text-align: center; /* Align text to the left */
+        padding-right: 15px; /* Adjust padding to move text more to the left */
+      }
+  
+    .modal {
+      width: 90%;
+      padding: 15px;
+    }
+  }

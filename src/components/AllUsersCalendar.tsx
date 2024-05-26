@@ -123,14 +123,13 @@ function AllUsersCalendar() {
               <div>
                 {day.dayNumberText}
                 {eventsForDay.slice(0, 2).map((event, index) => (
-                  <div key={index} className={event.type === 'vacation' ? "vacation-event" : "business-trip-event"}>
+                  <div key={index} className={`event-name ${event.type === 'vacation' ? "vacation-event" : "business-trip-event"}`}>
                     <span>{event.ime} {event.priimek}</span>
                   </div>
                 ))}
                 {eventsForDay.length > 2 && (
                   <button className="show-more" onClick={() => openModal(eventsForDay)}>Show more</button>
                 )}
-                {holiday && <div className="holiday-label">Holiday</div>}
               </div>
             );
           }}
