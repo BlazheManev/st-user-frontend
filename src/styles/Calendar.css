@@ -49,17 +49,3 @@
   .saturday {
     background-color: #e6f7ff;
   }
-  
-  .vacation-day {
-    background-color: #e6ffe6; /* Light green background for vacation days */
-  }
-  
-  .vacation-event {
-    font-size: 0.9em;
-    color: #000;
-  }
-  
-  .vacation-reason {
-    color: blue;
-  }
-  

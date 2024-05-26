@@ -1,0 +1,102 @@
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .custom-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+  
+  .custom-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  
+  .custom-modal-content {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  
+  .vacation-event {
+    color: #000;
+    background-color: #e6ffe6; /* Light green background for vacation events */
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+  }
+  
+  .business-trip-event {
+    color: #000;
+    background-color: #ffecb3; /* Light yellow background for business trip events */
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+  }
+  
+  .vacation-reason {
+    color: blue;
+  }
+  
+  .business-trip-destination {
+    color: darkorange;
+  }
+  
+  .show-more {
+    background: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: block;
+    text-align: center;
+  }
+  
+  .show-more:hover {
+    background: #0056b3;
+  }
+  
+  .custom-modal button {
+    background: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1em;
+  }
+  
+  .custom-modal button:hover {
+    background: #0056b3;
+  }
+  
+  @media (max-width: 600px) {
+    .custom-modal {
+      width: 90%;
+      padding: 15px;
+    }
+  }
+  

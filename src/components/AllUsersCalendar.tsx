@@ -6,12 +6,15 @@ import allLocales from "@fullcalendar/core/locales-all";
 import { format } from "date-fns";
 import axios from "axios";
 import authHeader from "../services/auth-header";
+import CustomModal from "./customModel.component";
+import '../styles/CustomModal.css';
 
 interface Absence {
   userId: string;
   ime: string;
   priimek: string;
   vacations: Vacation[];
+  businessTrips: BusinessTrip[];
   year: number;
 }
 
@@ -20,6 +23,16 @@ interface Vacation {
   endDate: string;
   reason: string;
 }
+
+interface BusinessTrip {
+  startDate: string;
+  endDate: string;
+  destination: string;
+}
+
+type CalendarEvent = 
+  | (Vacation & { type: 'vacation'; ime: string; priimek: string })
+  | (BusinessTrip & { type: 'businessTrip'; ime: string; priimek: string });
 
 const holidays = [
   "2024-01-01",
@@ -40,6 +53,8 @@ const isHoliday = (date: Date) => holidays.includes(format(date, "yyyy-MM-dd"));
 
 function AllUsersCalendar() {
   const [absences, setAbsences] = useState<Absence[]>([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
     axios
@@ -56,6 +71,16 @@ function AllUsersCalendar() {
     // Placeholder for event handling if needed
   };
 
+  const openModal = (events: CalendarEvent[]) => {
+    setModalContent(events);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setModalContent([]);
+  };
+
   return (
     <div className="demo-app">
       <div className="demo-app-main">
@@ -70,28 +95,41 @@ function AllUsersCalendar() {
           eventsSet={handleEvents}
           dayCellContent={(day) => {
             const dateStr = format(day.date, "yyyy-MM-dd");
-            const eventsForDay = absences
+            const eventsForDay: CalendarEvent[] = absences
               .flatMap((absence) =>
-                absence.vacations.map((vacation) => ({
-                  ...vacation,
-                  ime: absence.ime,
-                  priimek: absence.priimek
-                }))
+                [
+                  ...(absence.vacations || []).map((vacation) => ({
+                    ...vacation,
+                    type: 'vacation' as const,
+                    ime: absence.ime,
+                    priimek: absence.priimek
+                  })),
+                  ...(absence.businessTrips || []).map((trip) => ({
+                    ...trip,
+                    type: 'businessTrip' as const,
+                    ime: absence.ime,
+                    priimek: absence.priimek
+                  }))
+                ]
               )
               .filter(
-                (vacation) =>
-                  dateStr >= format(new Date(vacation.startDate), "yyyy-MM-dd") &&
-                  dateStr <= format(new Date(vacation.endDate), "yyyy-MM-dd")
+                (event) =>
+                  dateStr >= format(new Date(event.startDate), "yyyy-MM-dd") &&
+                  dateStr <= format(new Date(event.endDate), "yyyy-MM-dd")
               );
             const holiday = isHoliday(day.date);
+
             return (
               <div>
                 {day.dayNumberText}
-                {eventsForDay.map((event, index) => (
-                  <div key={index} className="vacation-event">
-                    <strong>{event.ime} {event.priimek}:</strong> <span className="vacation-reason">{event.reason}</span>
+                {eventsForDay.slice(0, 2).map((event, index) => (
+                  <div key={index} className={event.type === 'vacation' ? "vacation-event" : "business-trip-event"}>
+                    <span>{event.ime} {event.priimek}</span>
                   </div>
                 ))}
+                {eventsForDay.length > 2 && (
+                  <button className="show-more" onClick={() => openModal(eventsForDay)}>Show more</button>
+                )}
                 {holiday && <div className="holiday-label">Holiday</div>}
               </div>
             );
@@ -99,10 +137,10 @@ function AllUsersCalendar() {
           dayCellClassNames={(date) => {
             const day = date.date.getDay();
             const dateStr = format(date.date, "yyyy-MM-dd");
-            const isVacation = absences.some(absence =>
-              absence.vacations.some(vacation =>
-                dateStr >= format(new Date(vacation.startDate), "yyyy-MM-dd") &&
-                dateStr <= format(new Date(vacation.endDate), "yyyy-MM-dd")
+            const isVacationOrTrip = absences.some(absence =>
+              [...(absence.vacations || []), ...(absence.businessTrips || [])].some(event =>
+                dateStr >= format(new Date(event.startDate), "yyyy-MM-dd") &&
+                dateStr <= format(new Date(event.endDate), "yyyy-MM-dd")
               )
             );
             return isHoliday(date.date)
@@ -111,12 +149,24 @@ function AllUsersCalendar() {
               ? "sunday"
               : day === 6
               ? "saturday"
-              : isVacation
+              : isVacationOrTrip
               ? "vacation-day"
               : "";
           }}
         />
       </div>
+      <CustomModal isOpen={modalIsOpen} onClose={closeModal}>
+        <h2>Vacation Details</h2>
+        {modalContent.map((event, index) => (
+          <div key={index} className={event.type === 'vacation' ? "vacation-event" : "business-trip-event"}>
+            <strong>{event.ime} {event.priimek}:</strong> 
+            <span className={event.type === 'vacation' ? "vacation-reason" : "business-trip-destination"}>
+              {event.type === 'vacation' ? `Vacation: ${event.reason}` : `Business Trip: ${event.destination}`}
+            </span>
+          </div>
+        ))}
+        <button onClick={closeModal}>Close</button>
+      </CustomModal>
     </div>
   );
 }
