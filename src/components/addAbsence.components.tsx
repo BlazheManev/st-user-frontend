@@ -3,6 +3,7 @@ import axios from 'axios';
 import AuthService from '../services/auth.service';
 import authHeader from '../services/auth-header';
 import '../styles/AddAbsence.css'; // Create and import a CSS file for styling
+import { eachDayOfInterval } from 'date-fns';
 
 interface Vacation {
   _id: string;
@@ -36,7 +37,7 @@ const AddAbsence: React.FC = () => {
       fetchAbsences(currentUser.id);
       fetchRemainingDays(currentUser.id);
     }
-  }, [currentUser?.id]); // Only call when currentUser.id changes and is non-null
+  }, [currentUser]); // Only call when currentUser changes
 
   const fetchAbsences = async (userId: string) => {
     try {
@@ -60,6 +61,18 @@ const AddAbsence: React.FC = () => {
     event.preventDefault();
 
     if (currentUser && currentUser.id) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const vacationDaysRequested = eachDayOfInterval({
+        start,
+        end
+      }).filter(date => date.getDay() !== 0 && date.getDay() !== 6).length;
+
+      if (vacationDaysRequested > remainingDays) {
+        setMessage('Not enough vacation days left.');
+        return;
+      }
+
       const absenceData = {
         userId: currentUser.id,
         startDate,
