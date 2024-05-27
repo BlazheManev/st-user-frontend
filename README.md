@@ -35,8 +35,12 @@ The application is deployed on Render. You can access it here: [ST-User Frontend
     ```
 
 3. Create a .env file in the root directory and add the following environment variables:
-
+   for local
     ```env
+    REACT_APP_API_URL=http://localhost:3000
+    ```
+    for production
+     ```env
     REACT_APP_API_URL=https://st-backend-7eb0.onrender.com
     ```
 
