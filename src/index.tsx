@@ -16,7 +16,14 @@ root.render(
   </BrowserRouter>
 );
 
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.register({
+  onSuccess: (registration) => {
+    console.log('Service worker registered successfully:', registration);
+  },
+  onUpdate: (registration) => {
+    console.log('Service worker updated:', registration);
+  }
+});
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
