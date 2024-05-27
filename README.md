@@ -47,17 +47,18 @@ The application is deployed on Render. You can access it here: [ST-User Frontend
 
 ## Running the Application
 
-To run the application locally:
+1. To run the application locally:
 
     ```bash
     npm start
     ```
+    
 
 This will start the development server and open the application in your default web browser.
 
 ## Build
 
-To create a production build of the application:
+1. To create a production build of the application:
 
     ```bash
     npm run build
