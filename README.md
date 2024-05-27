@@ -24,7 +24,7 @@ The application is deployed on Render. You can access it here: [ST-User Frontend
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/st-user-frontend.git
+    https://github.com/BlazheManev/st-user-frontend.git
     cd st-user-frontend
     ```
 
