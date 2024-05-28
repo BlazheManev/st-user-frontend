@@ -59,6 +59,10 @@ const AddAbsence: React.FC = () => {
     }
   };
 
+  const isAxiosError = (error: any): error is { response: { data: { message: string } } } => {
+    return error && error.response && error.response.data && typeof error.response.data.message === 'string';
+  };
+
   const handleAddAbsence = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -92,7 +96,11 @@ const AddAbsence: React.FC = () => {
         await fetchAbsences(currentUser.id); // Refresh the absences list
         await fetchRemainingDays(currentUser.id); // Refresh the remaining days
       } catch (error) {
-        setMessage('Error adding absence. Please try again.');
+        if (isAxiosError(error)) {
+          setMessage(error.response.data.message); // Display the specific error message
+        } else {
+          setMessage('Error adding absence. Please try again.');
+        }
         console.error('Error adding absence:', error);
       }
     } else {
@@ -154,7 +162,7 @@ const AddAbsence: React.FC = () => {
                   <p><strong>To:</strong> {new Date(vacation.endDate).toLocaleDateString()}</p>
                   <p><strong>Reason:</strong> {vacation.reason}</p>
                   <p>
-                    <strong>Status:</strong> 
+                    <strong>Status:</strong>
                     <span className={`status status-${vacation.status.replaceAll(' ', '-')}`}>
                       {vacation.status}
                     </span>
