@@ -71,7 +71,7 @@ export default class Login extends Component<Props, State> {
       const currentUser = AuthService.getCurrentUser(); // Retrieve current user details
       await this.subscribeUserToPush(currentUser.id); // Pass the user ID to the subscription function
       this.setState({ redirect: "/profile" });
-     // window.location.reload();
+      window.location.reload();
     } catch (error) {
       let resMessage = "An error occurred";
       if (error instanceof Error) {

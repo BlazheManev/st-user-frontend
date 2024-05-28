@@ -16,6 +16,7 @@ import MyQRCode from "./components/myQR.component";
 import AddAbsence from "./components/addAbsence.components"; // Import the AddAbsence component
 import AllUsersCalendar from "./components/AllUsersCalendar"; // Import the new calendar component
 import VacationApproval from "./components/VacationApproval"; // Import the VacationApproval component
+import PrivateRoute from "./components/privateRoute"; // Import PrivateRoute
 
 import EventBus from "./common/EventBus";
 
@@ -130,6 +131,13 @@ class App extends Component<Props, State> {
                       {currentUser.email}
                     </Link>
                   </li>
+                  {currentUser.roles && currentUser.roles.includes("ADMIN") && (
+                    <li className="nav-item">
+                      <Link to={"/register"} className="nav-link">
+                        Sign Up
+                      </Link>
+                    </li>
+                  )}
                   <li className="nav-item">
                     <a href="/login" className="nav-link" onClick={this.logOut}>
                       LogOut
@@ -143,11 +151,6 @@ class App extends Component<Props, State> {
                       Login
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to={"/register"} className="nav-link">
-                      Sign Up
-                    </Link>
-                  </li>
                 </>
               )}
             </ul>
@@ -158,13 +161,13 @@ class App extends Component<Props, State> {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<PrivateRoute roles={["ADMIN"]}><Register /></PrivateRoute>} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/myQR" element={<MyQRCode />} />
-            <Route path="/all-users-calendar" element={<AllUsersCalendar />} /> {/* Add this line */}
-            <Route path="/addAbsence" element={<AddAbsence />} /> {/* Add this route */}
-            <Route path="/vacation-approval" element={<VacationApproval />} /> {/* Add this route */}
+            <Route path="/all-users-calendar" element={<AllUsersCalendar />} />
+            <Route path="/addAbsence" element={<AddAbsence />} />
+            <Route path="/vacation-approval" element={<VacationApproval />} />
           </Routes>
         </div>
 
