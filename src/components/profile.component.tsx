@@ -5,6 +5,7 @@ import axios from "axios";
 import { Employee } from "../types/employee.model"; // Adjust the path as necessary
 
 type Props = {};
+const API_URL = process.env.REACT_APP_API_URL
 
 type State = {
   redirect: string | null;
@@ -31,7 +32,7 @@ export default class Profile extends Component<Props, State> {
       this.setState({ redirect: "/" });
     } else {
       try {
-        const response = await axios.get(`http://localhost:3000/users/get/${currentUser.id}`, {
+        const response = await axios.get(`${API_URL}/users/get/${currentUser.id}`, {
           headers: {
             Authorization: `Bearer ${currentUser.accessToken}`,
           },
