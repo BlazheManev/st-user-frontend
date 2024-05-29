@@ -1,15 +1,16 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
-import IUser from "../types/user.type";
+import axios from "axios";
+import { Employee } from "../types/employee.model"; // Adjust the path as necessary
 
 type Props = {};
 
 type State = {
-  redirect: string | null,
-  userReady: boolean,
-  currentUser: (IUser & { accessToken?: string }) | null
-}
+  redirect: string | null;
+  userReady: boolean;
+  currentEmployee: Employee | null;
+};
 
 export default class Profile extends Component<Props, State> {
   constructor(props: Props) {
@@ -18,60 +19,81 @@ export default class Profile extends Component<Props, State> {
     this.state = {
       redirect: null,
       userReady: false,
-      currentUser: null
+      currentEmployee: null,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const currentUser = AuthService.getCurrentUser();
+    console.log(currentUser);
 
     if (!currentUser) {
-      this.setState({ redirect: "/home" });
+      this.setState({ redirect: "/" });
     } else {
-      this.setState({ currentUser: currentUser, userReady: true });
+      try {
+        const response = await axios.get(`http://localhost:3000/users/get/${currentUser.id}`, {
+          headers: {
+            Authorization: `Bearer ${currentUser.accessToken}`,
+          },
+        });
+
+        if (response.data) {
+          this.setState({ currentEmployee: response.data, userReady: true });
+        }
+      } catch (error) {
+        console.error("There was an error fetching the employee!", error);
+        this.setState({ redirect: "/" });
+      }
     }
   }
 
   render() {
     if (this.state.redirect) {
-      return <Navigate to={this.state.redirect} />
+      return <Navigate to={this.state.redirect} />;
     }
 
-    const { currentUser } = this.state;
+    const { currentEmployee } = this.state;
 
     return (
       <div className="container">
-        {this.state.userReady && currentUser ? (
+        {this.state.userReady && currentEmployee ? (
           <div>
             <header className="jumbotron">
               <h3>
-                <strong>{currentUser.email}</strong> Profile
+                <strong>{currentEmployee.email}</strong> Profile
               </h3>
             </header>
             <p>
-              <strong>Token:</strong>{" "}
-              {currentUser.accessToken ? (
-                <>
-                  {currentUser.accessToken.substring(0, 20)} ...{" "}
-                  {currentUser.accessToken.substring(currentUser.accessToken.length - 20)}
-                </>
-              ) : (
-                "No token available"
-              )}
+              <strong>Id:</strong> {currentEmployee._id}
             </p>
             <p>
-              <strong>Id:</strong>{" "}
-              {currentUser.id}
+              <strong>Name:</strong> {currentEmployee.ime} {currentEmployee.priimek}
             </p>
             <p>
-              <strong>Email:</strong>{" "}
-              {currentUser.email}
+              <strong>Email:</strong> {currentEmployee.email}
             </p>
-            <strong>Authorities:</strong>
-            <ul>
-              {currentUser.roles &&
-                currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
-            </ul>
+            <p>
+              <strong>Roles:</strong>{" "}
+              {currentEmployee.roles.map((role, index) => (
+                <span key={index}>{role} </span>
+              ))}
+            </p>
+            <p>
+              <strong>Wage Per Hour:</strong> {currentEmployee.wagePerHour}
+            </p>
+            <p>
+              <strong>Vacation Days Left:</strong> {currentEmployee.vacationDaysLeft}
+            </p>
+            <p>
+              <strong>Education:</strong>{" "}
+              {currentEmployee.education.map((edu, index) => (
+                <div key={index}>
+                  <p>Institution: {edu.institution}</p>
+                  <p>Grade: {edu.grade}</p>
+                  <p>Title: {edu.title}</p>
+                </div>
+              ))}
+            </p>
           </div>
         ) : null}
       </div>
