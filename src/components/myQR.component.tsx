@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import QRCode from "qrcode";
 import AuthService from "../services/auth.service";
+import "../styles/MyQRCode.css"; // Import the CSS file
 
 const MyQRCode = () => {
   const [qrCode, setQrCode] = useState("");
@@ -23,11 +24,12 @@ const MyQRCode = () => {
     const intervalId = setInterval(generateQRCode, 15000); // regenerate every 15 seconds
 
     return () => clearInterval(intervalId); // clean up interval on component unmount
-  });
+  }, [currentUser.id]);
 
   return (
-    <div className="qr-code-container text-center mt-5">
+    <div className="qr-code-container">
       <h2>My QR Code</h2>
+      <p>This is to start your working day</p>
       {qrCode ? (
         <img src={qrCode} alt="Generated QR Code" className="qr-code" />
       ) : (

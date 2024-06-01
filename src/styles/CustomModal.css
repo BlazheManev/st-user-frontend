@@ -61,7 +61,7 @@
   }
   
   .show-more {
-    background: #007bff;
+    background: #2b2d42;
     border: none;
     color: white;
     cursor: pointer;
@@ -75,7 +75,7 @@
   }
   
   .show-more:hover {
-    background: #0056b3;
+    background: rgb(0, 38, 79);
   }
   
   .custom-modal button {

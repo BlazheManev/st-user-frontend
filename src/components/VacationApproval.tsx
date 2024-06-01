@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import authHeader from "../services/auth-header";
-import '../styles/CustomModal.css';
+import '../styles/VacationApproval.css';
 
 interface Absence {
   _id: string;
@@ -44,7 +44,7 @@ const VacationApproval = () => {
 
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     setCurrentUser(user);
-  }, []);
+  }, [API_URL]);
 
   const approveVacation = (absenceId: string, vacationId: string) => {
     axios

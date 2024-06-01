@@ -3,9 +3,10 @@ import { Navigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import axios from "axios";
 import { Employee } from "../types/employee.model"; // Adjust the path as necessary
+import '../styles/Profile.css'; // Import the CSS file
 
 type Props = {};
-const API_URL = process.env.REACT_APP_API_URL
+const API_URL = process.env.REACT_APP_API_URL;
 
 type State = {
   redirect: string | null;
@@ -56,10 +57,10 @@ export default class Profile extends Component<Props, State> {
     const { currentEmployee } = this.state;
 
     return (
-      <div className="container">
+      <div className="profile-container">
         {this.state.userReady && currentEmployee ? (
           <div>
-            <header className="jumbotron">
+            <header className="jumbotron profile-header">
               <h3>
                 <strong>{currentEmployee.email}</strong> Profile
               </h3>
@@ -76,7 +77,7 @@ export default class Profile extends Component<Props, State> {
             <p>
               <strong>Roles:</strong>{" "}
               {currentEmployee.roles.map((role, index) => (
-                <span key={index}>{role} </span>
+                <span key={index} className="role-badge">{role}</span>
               ))}
             </p>
             <p>
@@ -88,10 +89,10 @@ export default class Profile extends Component<Props, State> {
             <p>
               <strong>Education:</strong>{" "}
               {currentEmployee.education.map((edu, index) => (
-                <div key={index}>
-                  <p>Institution: {edu.institution}</p>
-                  <p>Grade: {edu.grade}</p>
-                  <p>Title: {edu.title}</p>
+                <div key={index} className="education-item">
+                  <p><strong>Institution:</strong> {edu.institution}</p>
+                  <p><strong>Grade:</strong> {edu.grade}</p>
+                  <p><strong>Title:</strong> {edu.title}</p>
                 </div>
               ))}
             </p>
