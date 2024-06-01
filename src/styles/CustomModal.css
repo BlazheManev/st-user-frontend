@@ -61,7 +61,7 @@
 }
 
 .show-more {
-  background: #2b2d42;
+  background: #6675ff;
   border: none;
   color: white;
   cursor: pointer;
@@ -79,7 +79,7 @@
 }
 
 .custom-modal button {
-  background: #007bff;
+  background: #6675ff;
   border: none;
   color: white;
   cursor: pointer;
@@ -90,7 +90,7 @@
 }
 
 .custom-modal button:hover {
-  background: #0056b3;
+  background: #007bff;
 }
 
 .button-group {
@@ -135,25 +135,30 @@
 }
 
 @media (max-width: 600px) {
-  .custom-modal {
+  .fc .fc-daygrid-day-frame {
+    align-items: center;
+    justify-content: left;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 0.9em;
+  }
+
+  .event-name {
+    display: none; /* Hide event names on small screens */
+  }
+
+  .show-more {
+      padding: 5px ; /* Adjust padding for smaller screens */
+      margin-top: 5px; /* Set a specific size for margin-top */
+      height: 5em; /* Fixed height */
+      width: 38px; /* Fixed width */
+      text-align: center; /* Align text to the left */
+      padding-right: 15px; /* Adjust padding to move text more to the left */
+    }
+
+  .modal {
     width: 90%;
     padding: 15px;
-  }
-
-  .button-group {
-    flex-direction: column;
-  }
-
-  .button-group button {
-    margin-bottom: 10px;
-  }
-
-  .time-inputs {
-    flex-direction: column;
-  }
-
-  .time-inputs label {
-    width: 100%;
-    margin-bottom: 10px;
   }
 }
