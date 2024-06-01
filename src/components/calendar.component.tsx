@@ -58,8 +58,8 @@ function Calendar() {
   };
 
   const handleDatesSet = (arg: DatesSetArg) => {
-    const startDate = format(startOfMonth(arg.start), 'yyyy-MM-dd');
-    const endDate = format(endOfMonth(arg.end), 'yyyy-MM-dd');
+    const startDate = format(startOfMonth(arg.view.currentStart), 'yyyy-MM-dd');
+    const endDate = format(endOfMonth(arg.view.currentStart), 'yyyy-MM-dd');
     fetchMonthlyEarnings(startDate, endDate);
   };
 
@@ -75,7 +75,7 @@ function Calendar() {
         console.error("Error fetching working hours:", error);
       });
     }
-  }, []);
+  }, [API_URL]); // Added API_URL to dependency array
 
   return (
     <div className="calendar-container">
