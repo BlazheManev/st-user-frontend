@@ -17,6 +17,7 @@ import AddAbsence from "./components/addAbsence.components"; // Import the AddAb
 import AllUsersCalendar from "./components/AllUsersCalendar"; // Import the new calendar component
 import VacationApproval from "./components/VacationApproval"; // Import the VacationApproval component
 import PrivateRoute from "./components/privateRoute"; // Import PrivateRoute
+import VoiceCommand from "./VoiceCommand"; // Import VoiceCommand
 
 import EventBus from "./common/EventBus";
 
@@ -72,7 +73,7 @@ class App extends Component<Props, State> {
 
     return (
       <div>
-        <nav className="navbar navbar-expand-lg navbar-light bg-custom">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
             Tracker
           </Link>
@@ -142,6 +143,9 @@ class App extends Component<Props, State> {
                     <a href="/login" className="nav-link" onClick={this.logOut}>
                       LogOut
                     </a>
+                  </li>
+                  <li className="nav-item">
+                    <VoiceCommand /> {/* Add VoiceCommand component here */}
                   </li>
                 </>
               ) : (

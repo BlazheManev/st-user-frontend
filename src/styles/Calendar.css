@@ -19,6 +19,10 @@
   width: 100%;
 }
 
+.sick-day {
+  background-color: #ffcccc;
+  color: red;
+}
 .demo-app-main {
   max-width: 1100px;
   margin: 0 auto;
@@ -96,6 +100,38 @@
 
 .earnings-display p strong {
   color: #333;
+}
+.fixed-buttons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fixed-buttons button {
+  background: #007bff;
+  border: none;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.fixed-buttons button:hover {
+  background: #0056b3;
+}
+
+.button-group button.selected {
+  background: #0056b3;
+}
+
+.time-inputs label {
+  display: block;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 768px) {

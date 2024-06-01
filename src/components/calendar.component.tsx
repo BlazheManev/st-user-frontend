@@ -8,7 +8,8 @@ import { format, startOfMonth, endOfMonth } from 'date-fns';
 import AuthService from "../services/auth.service";
 import axios from 'axios';
 import authHeader from '../services/auth-header';
-import '../styles/Calendar.css'; // Import the CSS file
+import CustomModal from "./customModel.component";
+import '../styles/Calendar.css';
 
 const holidays = [
   '2024-01-01', '2024-02-08', '2024-04-21', '2024-04-22', '2024-05-01', '2024-05-02', '2024-06-25', '2024-08-15', '2024-10-31', '2024-11-01', '2024-12-25', '2024-12-26'
@@ -21,6 +22,8 @@ interface WorkingHour {
   hours: number;
   minutes: number;
   seconds: number;
+  isAbsent?: boolean;
+  workFromHome?: boolean;
 }
 
 function Calendar() {
@@ -28,6 +31,11 @@ function Calendar() {
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>([]);
   const [totalWorkedHours, setTotalWorkedHours] = useState<string>("");
   const [totalEarnings, setTotalEarnings] = useState<string>("");
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [startTime, setStartTime] = useState<string>("07:00:00");
+  const [endTime, setEndTime] = useState<string>("15:00:00");
   const API_URL = process.env.REACT_APP_API_URL;
 
   const handleEvents = useCallback(
@@ -63,6 +71,33 @@ function Calendar() {
     fetchMonthlyEarnings(startDate, endDate);
   };
 
+  const addSickLeaveOrWorkFromHome = () => {
+    if (!selectedDate || !selectedType) return;
+
+    const currentUser = AuthService.getCurrentUser();
+    if (currentUser && currentUser.id) {
+      const userId = currentUser.id;
+      const apiUrl = `${API_URL}/users/add-sick-leave-or-work-from-home/${userId}/`;
+
+      const data: { date: string; type: string; startTime?: string; endTime?: string } = { date: selectedDate, type: selectedType };
+
+      if (selectedType === "Work From Home") {
+        data.startTime = startTime;
+        data.endTime = endTime;
+      }
+
+      axios.post(apiUrl, data, { headers: authHeader() })
+        .then((response) => {
+          console.log(`${selectedType} added:`, response.data);
+          alert(`${selectedType} recorded successfully!`);
+          window.location.reload();
+        }).catch((error) => {
+          console.error(`Error adding ${selectedType.toLowerCase()}:`, error);
+          alert(`Failed to record ${selectedType.toLowerCase()}.`);
+        });
+    }
+  };
+
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser();
     if (currentUser && currentUser.id) {
@@ -75,39 +110,83 @@ function Calendar() {
         console.error("Error fetching working hours:", error);
       });
     }
-  }, [API_URL]); // Added API_URL to dependency array
+  }, [API_URL]); 
+
+  const handleDateClick = (info: any) => {
+    setSelectedDate(info.dateStr);
+    setModalIsOpen(true);
+  };
 
   return (
     <div className="calendar-container">
-            <div className="earnings-display">
+      <div className="earnings-display">
         <h3>Monthly Summary</h3>
         <p><strong>Worked Hours:</strong> {totalWorkedHours}h</p>
         <p><strong>Monthly Earnings:</strong> ${totalEarnings}</p>
       </div>
       <div className="demo-app">
-      <div className="demo-app-main">
-                <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          selectable={false} // Disable selecting days to add events
-          editable={false} // Disable editing events
-          locales={allLocales}
-          locale="en" // Change to English
-          firstDay={1} // Set the first day of the week to Monday
-          eventsSet={handleEvents}
-          eventClick={handleEventClick}
-          datesSet={handleDatesSet}
-          dayCellContent={(day) => {
-            const workingDay = workingHours.find((wh) => format(new Date(wh.datum), 'yyyy-MM-dd') === format(day.date, 'yyyy-MM-dd'));
-            return workingDay ? `${day.dayNumberText} (${workingDay.hours}h ${workingDay.minutes}m)` : day.dayNumberText;
-          }}
-          dayCellClassNames={(date) => {
-            const day = date.date.getDay();
-            return isHoliday(date.date) ? 'holiday' : day === 0 ? 'sunday' : day === 6 ? 'saturday' : '';
-          }}
-        />
+        <div className="demo-app-main">
+          <FullCalendar
+            plugins={[dayGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            selectable={true}
+            editable={false}
+            locales={allLocales}
+            locale="en"
+            firstDay={1}
+            eventsSet={handleEvents}
+            eventClick={handleEventClick}
+            datesSet={handleDatesSet}
+            dayCellContent={(day) => {
+              const workingDay = workingHours.find((wh) => format(new Date(wh.datum), 'yyyy-MM-dd') === format(day.date, 'yyyy-MM-dd'));
+              return workingDay ? `${day.dayNumberText} (${workingDay.hours}h ${workingDay.minutes}m)` : day.dayNumberText;
+            }}
+            dayCellClassNames={(date) => {
+              const day = date.date.getDay();
+              const workingDay = workingHours.find((wh) => format(new Date(wh.datum), 'yyyy-MM-dd') === format(date.date, 'yyyy-MM-dd'));
+              if (isHoliday(date.date)) return 'holiday';
+              if (day === 0) return 'sunday';
+              if (day === 6) return 'saturday';
+              if (workingDay && workingDay.isAbsent) return 'sick-day';
+              if (workingDay && workingDay.workFromHome) return 'work-from-home-day';
+              return '';
+            }}
+            dateClick={handleDateClick}
+          />
+        </div>
       </div>
-      </div>
+      <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
+        <h2>Select Type</h2>
+        <div className="button-group">
+          <button
+            onClick={() => setSelectedType("Sick Leave")}
+            className={selectedType === "Sick Leave" ? "selected" : ""}
+          >
+            Sick Leave
+          </button>
+          <button
+            onClick={() => setSelectedType("Work From Home")}
+            className={selectedType === "Work From Home" ? "selected" : ""}
+          >
+            Work From Home
+          </button>
+        </div>
+        {selectedType === "Work From Home" && (
+          <div className="time-inputs">
+            <label>
+              Start Time:
+              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+            </label>
+            <label>
+              End Time:
+              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+            </label>
+          </div>
+        )}
+        <div className="modal-footer">
+          <button onClick={addSickLeaveOrWorkFromHome}>Confirm</button>
+        </div>
+      </CustomModal>
     </div>
   );
 }
