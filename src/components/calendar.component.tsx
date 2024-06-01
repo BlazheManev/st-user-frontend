@@ -84,8 +84,9 @@ function Calendar() {
         <p><strong>Worked Hours:</strong> {totalWorkedHours}h</p>
         <p><strong>Monthly Earnings:</strong> ${totalEarnings}</p>
       </div>
-      <div className="calendar-main">
-        <FullCalendar
+      <div className="demo-app">
+      <div className="demo-app-main">
+                <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           selectable={false} // Disable selecting days to add events
@@ -105,6 +106,7 @@ function Calendar() {
             return isHoliday(date.date) ? 'holiday' : day === 0 ? 'sunday' : day === 6 ? 'saturday' : '';
           }}
         />
+      </div>
       </div>
     </div>
   );

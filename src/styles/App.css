@@ -30,3 +30,14 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+/* Additional styles */
+.navbar.bg-custom {
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+/* Ensure the text and links are readable */
+.navbar.bg-custom .navbar-brand,
+.navbar.bg-custom .nav-link,
+.navbar.bg-custom .navbar-toggler-icon {
+  color: #2b2d42;
+}

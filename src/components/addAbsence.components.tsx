@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthService from '../services/auth.service';
 import authHeader from '../services/auth-header';
-import '../styles/AddAbsence.css'; // Create and import a CSS file for styling
+import '../styles/AddAbsence.css';
 import { eachDayOfInterval } from 'date-fns';
 
 interface Vacation {
@@ -32,14 +32,12 @@ const AddAbsence: React.FC = () => {
 
   const currentUser = AuthService.getCurrentUser();
   const API_URL = process.env.REACT_APP_API_URL;
-  console.log(API_URL);
 
   useEffect(() => {
     if (currentUser && currentUser.id) {
-      fetchAbsences(currentUser.id);
-      fetchRemainingDays(currentUser.id);
+      fetchRemainingDays(currentUser.id).then(() => fetchAbsences(currentUser.id));
     }
-  }, [currentUser?.id]); // Only call when currentUser.id changes
+  }, [currentUser?.id]);
 
   const fetchAbsences = async (userId: string) => {
     try {
@@ -84,7 +82,7 @@ const AddAbsence: React.FC = () => {
         startDate,
         endDate,
         reason,
-        status: 'waiting for approval', // Set initial status
+        status: 'waiting for approval',
       };
       try {
         await axios.post(
@@ -93,11 +91,11 @@ const AddAbsence: React.FC = () => {
           { headers: authHeader() }
         );
         setMessage('Absence added successfully!');
-        await fetchAbsences(currentUser.id); // Refresh the absences list
-        await fetchRemainingDays(currentUser.id); // Refresh the remaining days
+        await fetchAbsences(currentUser.id);
+        await fetchRemainingDays(currentUser.id);
       } catch (error) {
         if (isAxiosError(error)) {
-          setMessage(error.response.data.message); // Display the specific error message
+          setMessage(error.response.data.message);
         } else {
           setMessage('Error adding absence. Please try again.');
         }
@@ -109,72 +107,77 @@ const AddAbsence: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <h2 className="mb-4">Add Absence</h2>
-      <form onSubmit={handleAddAbsence}>
-        <div className="form-group">
-          <label htmlFor="startDate">Start Date:</label>
-          <input
-            type="date"
-            className="form-control"
-            id="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="endDate">End Date:</label>
-          <input
-            type="date"
-            className="form-control"
-            id="endDate"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="reason">Reason:</label>
-          <input
-            type="text"
-            className="form-control"
-            id="reason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Add Absence
-        </button>
-      </form>
-      {message && <div className="alert alert-info mt-3">{message}</div>}
-      <h3 className="mt-4">My Absences</h3>
-      <div className="absence-list">
-        {absences.map((absence) => (
-          <div key={absence._id} className="absence-card card mb-3">
-            <div className="card-body">
-              <h5 className="card-title">{absence.ime} {absence.priimek}</h5>
-              {absence.vacations.map((vacation) => (
-                <div key={vacation._id} className="vacation-details">
-                  <p><strong>From:</strong> {new Date(vacation.startDate).toLocaleDateString()}</p>
-                  <p><strong>To:</strong> {new Date(vacation.endDate).toLocaleDateString()}</p>
-                  <p><strong>Reason:</strong> {vacation.reason}</p>
-                  <p>
-                    <strong>Status:</strong>
-                    <span className={`status status-${vacation.status.replaceAll(' ', '-')}`}>
-                      {vacation.status}
-                    </span>
-                  </p>
-                </div>
-              ))}
-              <p className="card-text"><strong>Year:</strong> {absence.year}</p>
-            </div>
+    <div className="add-absence-container">
+      <div className="form-container">
+        <img src="https://hr.mcmaster.ca/app/uploads/2020/05/out-of-office-vacation.jpg" alt="Out of Office Vacation" className="vacation-image" />
+        <h2>Add Absence</h2>
+        <form onSubmit={handleAddAbsence}>
+          <div className="form-group">
+            <label htmlFor="startDate">Start Date:</label>
+            <input
+              type="date"
+              className="form-control"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
           </div>
-        ))}
+          <div className="form-group">
+            <label htmlFor="endDate">End Date:</label>
+            <input
+              type="date"
+              className="form-control"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="reason">Reason:</label>
+            <input
+              type="text"
+              className="form-control"
+              id="reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">
+            Add Absence
+          </button>
+        </form>
+        {message && <div className="alert alert-info mt-3">{message}</div>}
+        <h3 className="mt-4">Remaining Vacation Days: {remainingDays}</h3>
       </div>
-      <h3 className="mt-4">Remaining Vacation Days: {remainingDays}</h3>
+      <div className="absence-list-container">
+        <h2>My Absences</h2>
+        <div className="absence-list">
+          {absences.map((absence) => (
+            <div key={absence._id} className="absence-card card mb-3">
+              <div className="card-body">
+                <h5 className="card-title">{absence.ime} {absence.priimek}</h5>
+                {absence.vacations.map((vacation) => (
+                  <div key={vacation._id} className="vacation-details">
+                    <p><strong>From:</strong> {new Date(vacation.startDate).toLocaleDateString()}</p>
+                    <p><strong>To:</strong> {new Date(vacation.endDate).toLocaleDateString()}</p>
+                    <p><strong>Reason:</strong> {vacation.reason}</p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span className={`status status-${vacation.status.replaceAll(' ', '-')}`}>
+                        {vacation.status}
+                      </span>
+                    </p>
+                  </div>
+                ))}
+                <p className="card-text"><strong>Year:</strong> {absence.year}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
