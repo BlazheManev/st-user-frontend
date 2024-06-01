@@ -16,8 +16,16 @@ const holidays = [
 
 const isHoliday = (date: Date) => holidays.includes(format(date, 'yyyy-MM-dd'));
 
+interface WorkingHour {
+  datum: string;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 function Calendar() {
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
+  const [workingHours, setWorkingHours] = useState<WorkingHour[]>([]);
   const [totalWorkedHours, setTotalWorkedHours] = useState<string>("");
   const [totalEarnings, setTotalEarnings] = useState<string>("");
   const API_URL = process.env.REACT_APP_API_URL;
@@ -55,6 +63,20 @@ function Calendar() {
     fetchMonthlyEarnings(startDate, endDate);
   };
 
+  useEffect(() => {
+    const currentUser = AuthService.getCurrentUser();
+    if (currentUser && currentUser.id) {
+      const userId = currentUser.id;
+      const apiUrl = `${API_URL}/users/${userId}/working-hours`;
+
+      axios.get(apiUrl, { headers: authHeader() }).then((response) => {
+        setWorkingHours(response.data);
+      }).catch((error) => {
+        console.error("Error fetching working hours:", error);
+      });
+    }
+  }, []);
+
   return (
     <div className="calendar-container">
       <div className="calendar-main">
@@ -69,6 +91,10 @@ function Calendar() {
           eventsSet={handleEvents}
           eventClick={handleEventClick}
           datesSet={handleDatesSet}
+          dayCellContent={(day) => {
+            const workingDay = workingHours.find((wh) => format(new Date(wh.datum), 'yyyy-MM-dd') === format(day.date, 'yyyy-MM-dd'));
+            return workingDay ? `${day.dayNumberText} (${workingDay.hours}h ${workingDay.minutes}m)` : day.dayNumberText;
+          }}
           dayCellClassNames={(date) => {
             const day = date.date.getDay();
             return isHoliday(date.date) ? 'holiday' : day === 0 ? 'sunday' : day === 6 ? 'saturday' : '';
