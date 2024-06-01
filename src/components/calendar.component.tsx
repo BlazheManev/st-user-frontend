@@ -79,6 +79,11 @@ function Calendar() {
 
   return (
     <div className="calendar-container">
+            <div className="earnings-display">
+        <h3>Monthly Summary</h3>
+        <p><strong>Worked Hours:</strong> {totalWorkedHours}h</p>
+        <p><strong>Monthly Earnings:</strong> ${totalEarnings}</p>
+      </div>
       <div className="calendar-main">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
@@ -100,11 +105,6 @@ function Calendar() {
             return isHoliday(date.date) ? 'holiday' : day === 0 ? 'sunday' : day === 6 ? 'saturday' : '';
           }}
         />
-      </div>
-      <div className="earnings-display">
-        <h3>Monthly Summary</h3>
-        <p><strong>Worked Hours:</strong> {totalWorkedHours}h</p>
-        <p><strong>Monthly Earnings:</strong> ${totalEarnings}</p>
       </div>
     </div>
   );
