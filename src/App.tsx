@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/App.css";
 import "./styles/Calendar.css"; // Add this line for calendar styles
 
+import Hotjar from '@hotjar/browser'; // Import Hotjar
 import AuthService from "./services/auth.service";
 import IUser from './types/user.type';
 
@@ -42,6 +43,10 @@ class App extends Component<Props, State> {
   }
 
   componentDidMount() {
+    const siteId = 5227633;
+    const hotjarVersion = 6;
+    Hotjar.init(siteId, hotjarVersion);
+
     const user = AuthService.getCurrentUser();
 
     if (user) {
@@ -175,7 +180,7 @@ class App extends Component<Props, State> {
           </Routes>
         </div>
 
-        { /*<AuthVerify logOut={this.logOut}/> */}
+        { /*<AuthVerify logOut={this.logOut}/> */ }
       </div>
     );
   }
